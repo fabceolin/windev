@@ -1,0 +1,261 @@
+{
+  "builders": [
+    {
+      "accelerator": "kvm",
+      "boot_wait": "0s",
+      "communicator": "winrm",
+      "cpus": 4,
+      "disk_size": "{{user `disk_size`}}",
+      "floppy_files": [
+        "{{user `autounattend`}}",
+        "./scripts/disable-screensaver.ps1",
+        "./scripts/disable-winrm.ps1",
+        "./scripts/enable-winrm.ps1",
+        "./scripts/microsoft-updates.bat",
+        "./scripts/unattend.xml",
+        "./scripts/sysprep.bat",
+        "./scripts/win-updates.ps1"
+      ],
+      "headless": true,
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_url": "{{user `iso_url`}}",
+      "memory": "{{user `memory`}}",
+      "output_directory": "windows_2019-qemu",
+      "qemuargs": [
+        [
+          "-drive",
+          "file=windows_2019-qemu/{{ .Name }},if=virtio,cache=writeback,discard=ignore,format=qcow2,index=1"
+        ],
+        [
+          "-drive",
+          "file={{ user `virtio_win_iso` }},media=cdrom,index=3"
+        ]
+        ,
+        [
+         "-device", "virtio-net,netdev=forward,id=net0"
+        ],
+        [
+         "-netdev", "user,hostfwd=tcp::32022-:22,hostfwd=tcp::5985-:5985,id=forward"
+        ]
+      ],
+      "skip_nat_mapping": true,
+      "shutdown_command": "a:/sysprep.bat",
+      "type": "qemu",
+      "vm_name": "WindowsServer2019",
+      "winrm_password": "vagrant",
+      "winrm_timeout": "{{user `winrm_timeout`}}",
+      "winrm_username": "vagrant"
+
+    },
+    {
+      "boot_wait": "0s",
+      "communicator": "winrm",
+      "configuration_version": "8.0",
+      "cpus": 4,
+      "disk_size": "{{user `disk_size`}}",
+      "enable_secure_boot": true,
+      "enable_virtualization_extensions": true,
+      "floppy_files": [
+        "{{user `autounattend`}}",
+        "./scripts/disable-screensaver.ps1",
+        "./scripts/disable-winrm.ps1",
+        "./scripts/enable-winrm.ps1",
+        "./scripts/microsoft-updates.bat",
+        "./scripts/unattend.xml",
+        "./scripts/sysprep.bat",
+        "./scripts/win-updates.ps1"
+      ],
+      "guest_additions_mode": "disable",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_url": "{{user `iso_url`}}",
+      "memory": "{{user `memory`}}",
+      "shutdown_command": "a:/sysprep.bat",
+      "switch_name": "{{user `hyperv_switchname`}}",
+      "type": "hyperv-iso",
+      "vm_name": "WindowsServer2019",
+      "winrm_password": "vagrant",
+      "winrm_timeout": "{{user `winrm_timeout`}}",
+      "winrm_username": "vagrant"
+    },
+    {
+      "boot_wait": "2m",
+      "communicator": "winrm",
+      "cpus": 4,
+      "disk_adapter_type": "lsisas1068",
+      "disk_size": "{{user `disk_size`}}",
+      "disk_type_id": "{{user `disk_type_id`}}",
+      "floppy_files": [
+        "{{user `autounattend`}}",
+        "./scripts/disable-screensaver.ps1",
+        "./scripts/disable-winrm.ps1",
+        "./scripts/enable-winrm.ps1",
+        "./scripts/microsoft-updates.bat",
+        "./scripts/unattend.xml",
+        "./scripts/sysprep.bat",
+        "./scripts/win-updates.ps1"
+      ],
+      "guest_os_type": "windows9srv-64",
+      "headless": "{{user `headless`}}",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_url": "{{user `iso_url`}}",
+      "memory": "{{user `memory`}}",
+      "shutdown_command": "a:/sysprep.bat",
+      "type": "vmware-iso",
+      "version": 14,
+      "vm_name": "WindowsServer2019",
+      "vmx_data": {
+        "RemoteDisplay.vnc.enabled": "false",
+        "RemoteDisplay.vnc.port": "5900"
+      },
+      "vmx_remove_ethernet_interfaces": true,
+      "vnc_port_max": 5980,
+      "vnc_port_min": 5900,
+      "winrm_password": "vagrant",
+      "winrm_timeout": "{{user `winrm_timeout`}}",
+      "winrm_username": "vagrant"
+    },
+    {
+      "boot_wait": "2m",
+      "communicator": "winrm",
+      "cpus": 4,
+      "disk_size": "{{user `disk_size`}}",
+      "floppy_files": [
+        "{{user `autounattend`}}",
+        "./scripts/disable-screensaver.ps1",
+        "./scripts/disable-winrm.ps1",
+        "./scripts/enable-winrm.ps1",
+        "./scripts/microsoft-updates.bat",
+        "./scripts/win-updates.ps1",
+        "./scripts/unattend.xml",
+        "./scripts/sysprep.bat"
+      ],
+      "guest_additions_mode": "disable",
+      "guest_os_type": "Windows2016_64",
+      "headless": "{{user `headless`}}",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_url": "{{user `iso_url`}}",
+      "memory": "{{user `memory`}}",
+      "shutdown_command": "a:/sysprep.bat",
+      "type": "virtualbox-iso",
+      "vm_name": "WindowsServer2019",
+      "winrm_password": "vagrant",
+      "winrm_timeout": "8h",
+      "winrm_username": "vagrant",
+      "vboxmanage": [
+         [ "modifyvm", "{{.Name}}", "--natpf1", "winrm,tcp,127.0.0.1,55986,,5985" ],
+         [ "modifyvm", "{{.Name}}", "--natpf1", "ssh,tcp,127.0.0.1,32022,,22" ]
+      ]
+    }
+  ],
+  "post-processors": [
+    {
+      "keep_input_artifact": false,
+      "output": "windows_2019_{{.Provider}}.box",
+      "type": "vagrant",
+      "vagrantfile_template": "vagrantfile-windows_2016.template"
+    }
+  ],
+  "provisioners": [
+    {
+      "execute_command": "{{ .Vars }} cmd /c \"{{ .Path }}\"",
+      "scripts": [
+        "./scripts/vm-guest-tools.bat",
+        "./scripts/enable-rdp.bat"
+      ],
+      "type": "windows-shell"
+    },
+    {
+      "scripts": [
+        "./scripts/debloat-windows.ps1"
+      ],
+      "type": "powershell"
+    },
+    {
+      "restart_timeout": "{{user `restart_timeout`}}",
+      "type": "windows-restart",
+      "check_registry": "true"
+    },
+    {
+      "type": "windows-shell",
+      "inline": [
+        "powershell -ExecutionPolicy ByPass Invoke-Expression (Invoke-WebRequest -Uri http://raw.githubusercontent.com/ansible/ansible/devel/examples/scripts/ConfigureRemotingForAnsible.ps1 -UseBasicParsing)"
+      ]
+    },
+    {
+        "type": "powershell",
+        "inline": [
+        "Install-PackageProvider -Name NuGet -Force",
+        "Install-Module -Name PowerShellGet -Force",
+        "Install-Module -Name PackageManagement -Force",
+        "Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))"
+        ]
+    },
+    {
+        "type": "powershell",
+        "inline": [
+        "choco install --ignore-checksums -y psexec "
+        ]
+    },
+    {
+      "type": "windows-shell",
+      "inline": [
+        "psexec  /accepteula -i -s powershell -ExecutionPolicy ByPass Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0",
+        "psexec  /accepteula -i -s powershell -ExecutionPolicy ByPass Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0"
+       ]
+    },
+    {
+        "type": "powershell",
+        "inline": [
+        "Start-service sshd",
+	"Set-Service -Name sshd -StartupType 'Automatic'"
+        ]
+    },
+    {
+      "execute_command": "{{ .Vars }} cmd /c \"{{ .Path }}\"",
+      "scripts": [
+        "./scripts/uac-enable.bat",
+        "./scripts/compile-dotnet-assemblies.bat",
+        "./scripts/set-winrm-automatic.bat"
+      ],
+      "type": "windows-shell"
+    },
+    {
+      "scripts": [
+        "./scripts/enable-winrm.ps1"
+      ],
+      "type": "powershell",
+      "valid_exit_codes": [0,16001]
+    },
+    {
+      "type": "ansible",
+      "playbook_file": "win_dev-Ansible.yml",
+      "ansible_env_vars": [ "ANSIBLE_HOST_KEY_CHECKING=False", "ANSIBLE_SSH_ARGS='-o ForwardAgent=yes -o ControlMaster=auto -o ControlPersist=60s'", "ANSIBLE_NOCOLOR=True" ],
+      "local_port": 32022,
+      "extra_arguments": [
+         "--extra-vars", "winrm_password={{ .WinRMPassword }}"
+      ]
+    },
+    {
+      "execute_command": "{{ .Vars }} cmd /c \"{{ .Path }}\"",
+      "scripts": [
+        "./scripts/dis-updates.bat",
+        "./scripts/compact.bat"
+      ],
+      "type": "windows-shell"
+    }
+  ],
+  "variables": {
+    "autounattend": "./answer_files/2019/Autounattend.xml",
+    "disk_size": "200000",
+    "disk_type_id": "1",
+    "memory": "4096",
+    "headless": "false",
+    "hyperv_switchname": "{{env `hyperv_switchname`}}",
+    "iso_checksum": "sha256:549bca46c055157291be6c22a3aaaed8330e78ef4382c99ee82c896426a1cee1",
+    "iso_url": "https://software-download.microsoft.com/download/pr/17763.737.190906-2324.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us_1.iso",
+    "manually_download_iso_from": "https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2019",
+    "restart_timeout": "15m",
+    "virtio_win_iso": "./virtio-win.iso",
+    "winrm_timeout": "8h"
+  }
+}

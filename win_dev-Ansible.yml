@@ -1,0 +1,207 @@
+---
+- hosts: all
+  # site commands windows => https://www.windows-commandline.com/
+  gather_facts: true
+  vars:
+    ansible_user: vagrant
+    ansible_password: vagrant
+    ansible_connection: ssh
+    ansible_port: 32022
+    ansible_ssh_extra_args: '-o StricthostKeyChecking=no'
+    ansible_ssh_common_args: '-o userknownhostsfile=/dev/null'
+    ansible_host_key_checking: False
+    ansible_shell_type: cmd
+    ansible_ssh_host_key_checking: False
+    ansible_paramiko_host_key_checking: False
+    host_key_checking: False
+    prefix: /mingw64
+    ssh_host_key_checking: False
+    paramiko_host_key_checking: False 
+    reqpythonmods: [ xonsh, glances, windows-curses, magic-wormhole ] #list of required python modules
+    ansible_python_interpreter: "c:\\Python37\\python.exe"
+    #comentario
+  tasks:
+
+   - name: Install chocolatey
+     win_shell: powershell -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "[System.Net.ServicePointManager]::SecurityProtocol = 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
+     args:
+       executable: cmd
+
+
+   - name: Install packages
+     win_chocolatey:
+      name: "{{ item }}"
+      state: present
+      timeout: 18500
+     loop:
+      - 7zip.portable
+      - busybox
+      - cmake
+      - conemu
+      - git
+      - innosetup
+      - firefox
+      - microsoft-office-deployment
+      - msys2
+      - ninja
+      - rapidee
+      - sed
+      - vim
+      - wget
+      - dependencywalker
+     tags:
+      - packages
+
+   - name: Install GCC, build tools e dependencies
+     win_shell: |
+      set MSYSTEM=MINGW64
+      c:\tools\msys64\usr\bin\bash.exe --login -c "pacman -Sy --noconfirm --needed {{ item }}"
+     loop:
+      - base-devel
+      - dos2unix
+      - git
+      - libbz2-devel
+      - mingw-w64-x86_64-binutils
+      - mingw-w64-x86_64-boost
+      - mingw-w64-x86_64-bzip2
+      - mingw-w64-x86_64-cmake
+      - mingw-w64-x86_64-extra-cmake-modules
+      - mingw-w64-x86_64-gcc
+      - mingw-w64-x86_64-iconv
+      - mingw-w64-x86_64-icu
+      - mingw-w64-x86_64-libtool
+      - mingw-w64-x86_64-libzip
+      - mingw-w64-x86_64-python
+      - mingw-w64-x86_64-toolchain
+      - mingw-w64-x86_64-tools
+      - mingw-w64-x86_64-zlib
+      - p7zip
+      - pv
+      - python3-pip
+      - rsync
+      - unzip
+     args:
+       creates: c:/tools/msys64/mingw64/x86_64-w64-mingw32/bin/unzip.exe
+     tags:
+      - gcc
+
+   - name: Install visual studio vctool with all optional
+     win_chocolatey:
+      name: visualstudio2017-workload-vctools
+      state: present
+      timeout: 18500
+      package_params: "--add Microsoft.VisualStudio.Component.VC.ATLMFC --add Microsoft.VisualStudio.Component.VC.ATL --passive --locale en-US"
+     tags: visualstudio
+
+   - name: Install python3
+     win_chocolatey:
+      name: python3
+      version: 3.7
+      state: present
+      force: yes
+      timeout: 18500
+ 
+   - name: Add a PowerShell module
+     win_psmodule:
+       name: "{{ item }}"
+       state: present
+       allow_clobber: yes
+     loop:
+       - pscx
+     tags:
+       - powershell
+       - pscx
+
+   - name: Install busybox applets
+     win_shell: |
+       busybox.exe --install .
+     args:
+       chdir: c:/ProgramData/Chocolatey/bin/
+       creates: c:/ProgramData/Chocolatey/bin/ls.exe
+
+   - name: Configure the ssh service
+     win_service:
+       name: sshd
+       start_mode: auto
+       state: started
+     tags:
+       - ssh
+
+   - name: Set the environment variables
+     win_path:
+       name: PATH
+       elements:
+         - c:\Program Files (x86)\Windows Kits\10\App Certification Kit\
+         - c:\Program Files\cmake\bin
+         - c:\Python37
+         - c:\tools\msys64\mingw64\x86_64-w64-mingw32\bin\
+         - c:\tools\msys64\mingw64\bin
+         - c:\tools\msys64\usr\bin
+       scope:  machine
+       state: present
+     tags:
+       - environment
+   
+   - name: Update pip
+     win_command: c:\Python37\python.exe -m pip install --upgrade pip
+
+   - name: Check currently installed python3 modules
+     win_command: c:\Python37\Scripts\pip.exe list --format=freeze
+     register: curpythonmods
+
+   - name: Install python3 modules
+     win_command: c:\Python37\python.exe -m pip install "{{ item }}"
+     with_items:
+       - "{{ reqpythonmods | difference(curpythonmods.stdout_lines) }}"
+
+   - name: "Download Mesa drivers"
+     ansible.windows.win_get_url:
+         url: "https://github.com/pal1000/mesa-dist-win/releases/download/21.1.3/mesa3d-21.1.3-release-msvc.7z"
+         dest: C:\mesa3d-21.1.3-release-msvc.7z
+         force: no
+     tags:
+         - 3d
+
+   - name: "Unzip the Mesa drivers"
+     community.windows.win_unzip:
+         src: C:\mesa3d-21.1.3-release-msvc.7z
+         dest: C:\mesa\ 
+         delete_archive: yes
+     tags:
+         - 3d
+
+   - name: "Install Mesa drivers"
+     win_shell: "c:\\tools\\msys64\\usr\\bin\\echo.exe -e -n 22\\n | c:\\tools\\msys64\\usr\\bin\\pv.exe -q -L 1 | c:\\tools\\msys64\\usr\\bin\\timeout.exe 5s c:/mesa/systemwidedeploy.cmd"
+     ignore_errors: yes
+     tags: 
+         - 3d
+         - 3d-deploy
+
+   - name: Set 3d environment variables
+     ansible.windows.win_environment:
+        state: present
+        name: MESA_GL_VERSION_OVERRIDE
+        value: 3.2
+        level: machine
+     tags:
+       - environment
+       - 3d
+       - 3d-environment
+
+   - name: Set 3d environment variables
+     ansible.windows.win_environment:
+        state: present
+        name: GALLIUM_DRIVER
+        value: swr
+        level: machine
+     tags:
+       - environment
+       - 3d
+       - 3d-environment
+
+   
+   - name: Reboot for winrm
+     win_reboot:
+        reboot_timeout: 18000
+
+
