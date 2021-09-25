@@ -2,15 +2,36 @@
   connection: local
   become: true
   tasks:
-    - name: PGP PUBLIC KEY BLOCK
-      shell: 'curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -'
-   
+
+    - name: install docker dependencies
+      apt:
+        name: "{{item}}"
+        state: present
+        update_cache: yes
+      loop:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - gnupg-agent
+        - software-properties-common
+
+    - name: add GPG keys
+      apt_key:
+        url: "{{ item }}"
+        state: present
+      loop:
+        - https://download.docker.com/linux/ubuntu/gpg
+        - https://apt.releases.hashicorp.com/gpg
+
     - name: Adding repository  
       apt_repository:
-        repo: deb [arch=amd64] https://apt.releases.hashicorp.com focal main
+        repo: "{{ item }}"
         update_cache: true
-        filename: hashicorp
+        filename: "{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=8') }}"
       become: yes
+      loop:
+        - deb https://download.docker.com/linux/ubuntu focal stable
+        - deb [arch=amd64] https://apt.releases.hashicorp.com focal main
 
     - name: Update apt-get repo and cache
       apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
@@ -21,25 +42,26 @@
         name: "{{ item }}"
       become: true
       loop:
-        - curl
-        - gpg
-        - software-properties-common
-        - git
-        - vagrant=2.2.16
-        - lsb-release
-        - qemu-kvm
-        - sudo
-        - libvirt-daemon-system
-        - libvirt-clients
         - bridge-utils
+        - containerd.io
+        - curl
+        - docker-ce
+        - docker-ce-cli
+        - git
+        - gpg
+        - libvirt-clients
+        - libvirt-daemon-system
+        - libvirt-dev
+        - lsb-release
+        - packer=1.6.1
+        - qemu-kvm
+        - rsyslog
+        - software-properties-common
+        - sudo
+        - vagrant=2.2.16
         - vim
         - virt-manager
-        - rsyslog
-        - libvirt-dev
         - wget
-        - packer=1.6.1
-        - virtualbox
-
     - name: Prevent vagrant and packer from being upgraded
       dpkg_selections:
          name: "{{ item }}"
@@ -47,6 +69,12 @@
       loop:
         - vagrant
         - packer
+
+    - name: Make sure that docekr is active
+      service:
+        name: docker
+        state: started
+        enabled: yes
 
     - name: Installing requirements via pip3
       pip:
