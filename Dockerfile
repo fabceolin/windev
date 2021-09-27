@@ -19,8 +19,6 @@ RUN --mount=type=bind,target=/tmp/windows_2019_libvirt.box,source=windows_2019_l
 RUN vagrant init windev
 COPY Vagrantfile /
 COPY startup.sh /
-COPY exports /etc/exports
-VOLUME /exports
-EXPOSE 111/udp 111/tcp 2049/tcp 2049/udp 5900/tcp 5900/udp
+EXPOSE 3389/tcp 3389/udp 32022/tcp 5900/tcp 5900/udp
 ENTRYPOINT ["/startup.sh"]
 
