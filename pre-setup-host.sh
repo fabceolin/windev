@@ -5,7 +5,7 @@
 # Considering the mininum installation after focal debotstrapped chroot variant buildd
 mkdir windev
 sudo debootstrap --variant=buildd focal windev
-for i in dev proc sys /dev/pts; do mount --bind /$i windev/$i; done
+for i in dev proc sys /dev/pts run ; do mount --bind /$i windev/$i; done
 chroot windev <<EOF
 cd /root
 apt-get update
