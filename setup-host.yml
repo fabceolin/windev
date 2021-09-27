@@ -156,6 +156,7 @@
         - vagrantfile-windows_2016.template
         - win_dev-Ansible.yml
         - windows_2019.json
+        - startup.sh
       tags:
         - copy
 
