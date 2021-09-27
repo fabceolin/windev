@@ -1,5 +1,5 @@
 Vagrant.configure("2") do |config|
-  config.vm.box = "win_dev-Ansible"
+  config.vm.box = "windev"
   config.vm.guest = :windows
   
   config.vm.hostname = "win_dev-machine"
