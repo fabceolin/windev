@@ -2,7 +2,7 @@ Vagrant.configure("2") do |config|
   config.vm.box = "windev"
   config.vm.guest = :windows
   
-  config.vm.hostname = "win_dev-machine"
+  config.vm.hostname = "windev"
   config.vm.network :forwarded_port, guest: 3389, host: 3389, id: "rdp", auto_correct: true
   config.vm.network :forwarded_port, guest: 22, host: 32022, id: "ssh", auto_correct: true
   config.vm.network :forwarded_port, guest: 5985, host: 55986, id: "winrm", auto_correct: true
