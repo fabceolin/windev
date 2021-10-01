@@ -21,7 +21,7 @@ COPY Vagrantfile /
 COPY startup.sh /
 RUN apt-get install -y samba
 COPY etc/samba/smb.conf /etc/samba/smb.conf
-RUN PASS=root; echo -ne "$PASS\n$PASS\n" | smbpasswd -a -s root
+RUN  /bin/echo -ne "root\nroot\n" | smbpasswd -a -s root
 EXPOSE 445/tcp 139/tcp 138/udp 137/udp 3389/tcp 3389/udp 32022/tcp 5900/tcp 5900/udp
 ENTRYPOINT ["/startup.sh"]
 

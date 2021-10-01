@@ -10,7 +10,9 @@ chroot windev <<EOF
 cd /root
 apt-get update
 apt-get upgrade -y
-apt-get install software-properties-common -y
+apt-get install software-properties-common -y || true
+mv /var/lib/dpkg/info/systemd.postinst /var/lib/dpkg/info/systemd.postinst.orig
+dpkg --configure --pending
 add-apt-repository multiverse
 
 apt-get install -y sshpass sudo python3 python3-distutils wget python3-pip
