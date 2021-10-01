@@ -5,6 +5,7 @@ set -eou pipefail
 chown root:kvm /dev/kvm
 service libvirtd start
 service virtlogd start
+service smbd start
 [ -z "$CPU" ] && export CPU=4
 [ -z "$RAM" ] && export RAM=4096
 VAGRANT_DEFAULT_PROVIDER=libvirt vagrant up
