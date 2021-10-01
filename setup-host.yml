@@ -149,6 +149,7 @@
       copy:
         src: "{{ item  }}"
         dest: "/"
+        mode: preserve
       loop:
         - answer_files
         - scripts
@@ -158,6 +159,23 @@
         - windows_2019.json
         - startup.sh
         - Dockerfile
+      tags:
+        - copy
+
+    - name: ensure custom facts directory exists
+      file: >
+         path=/etc/samba
+         recurse=yes
+         state=directory
+      tags:
+        - copy
+
+    - name: Copy packer files to chroot
+      copy:
+        src: "{{ item  }}"
+        dest: "/{{ item }}"
+      loop:
+        - etc/samba/smb.conf 
       tags:
         - copy
 

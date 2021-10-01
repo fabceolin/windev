@@ -6,6 +6,8 @@
 mkdir windev
 sudo debootstrap --variant=buildd focal windev
 for i in dev proc sys /dev/pts run ; do mount --bind /$i windev/$i; done
+python3 -m pip install pip --upgrade
+python3 -m pip install ansible
 chroot windev <<EOF
 cd /root
 apt-get update
@@ -16,6 +18,5 @@ dpkg --configure --pending
 add-apt-repository multiverse
 
 apt-get install -y sshpass sudo python3 python3-distutils wget python3-pip
-python3 -m pip install pip --upgrade
-python3 -m pip install ansible
 EOF
+for i in /dev/pts dev proc sys run ; do umount -l windev/$i; done

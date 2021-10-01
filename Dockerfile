@@ -11,10 +11,10 @@ RUN apt-get install -y net-tools
 RUN apt-get install -y busybox-static 
 RUN apt-get autoclean
 RUN apt-get autoremove
-RUN --mount=type=bind,target=/tmp/vagrant_2.2.16_x86_64.deb,source=windev/vagrant_2.2.16_x86_64.deb,rw \
+RUN --mount=type=bind,target=/tmp/vagrant_2.2.16_x86_64.deb,source=vagrant_2.2.16_x86_64.deb,rw \
     dpkg -i /tmp/vagrant_2.2.16_x86_64.deb
 RUN vagrant plugin install vagrant-libvirt
-RUN --mount=type=bind,target=/tmp/windows_2019_libvirt.box,source=windev/windows_2019_libvirt.box,rw \
+RUN --mount=type=bind,target=/tmp/windows_2019_libvirt.box,source=windows_2019_libvirt.box,rw \
     vagrant box add windev /tmp/windows_2019_libvirt.box
 RUN vagrant init windev
 COPY Vagrantfile /
