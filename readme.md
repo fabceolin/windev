@@ -41,30 +41,30 @@ The Windows 2019 license is valid for 180 days and Office for 5 days after the f
 * Windows has opengl 4.1 enabled via software with mesa drivers
 
 # Pre installed
-* msys2 environment pre installed
-      - base-devel
-      - dos2unix
-      - git
-      - libbz2-devel
-      - mingw-w64-x86_64-binutils
-      - mingw-w64-x86_64-boost
-      - mingw-w64-x86_64-bzip2
-      - mingw-w64-x86_64-cmake
-      - mingw-w64-x86_64-extra-cmake-modules
-      - mingw-w64-x86_64-gcc
-      - mingw-w64-x86_64-iconv
-      - mingw-w64-x86_64-icu
-      - mingw-w64-x86_64-libtool
-      - mingw-w64-x86_64-libzip
-      - mingw-w64-x86_64-python
-      - mingw-w64-x86_64-toolchain
-      - mingw-w64-x86_64-tools
-      - mingw-w64-x86_64-zlib
-      - p7zip
-      - pv
-      - python3-pip
-      - rsync
-      - unzip
+* msys2 environment
+    * base-devel
+    * dos2unix
+    * git
+    * libbz2-devel
+    * mingw-w64-x86_64-binutils
+    * mingw-w64-x86_64-boost
+    * mingw-w64-x86_64-bzip2
+    * mingw-w64-x86_64-cmake
+    * mingw-w64-x86_64-extra-cmake-modules
+    * mingw-w64-x86_64-gcc
+    * mingw-w64-x86_64-iconv
+    * mingw-w64-x86_64-icu
+    * mingw-w64-x86_64-libtool
+    * mingw-w64-x86_64-libzip
+    * mingw-w64-x86_64-python
+    * mingw-w64-x86_64-toolchain
+    * mingw-w64-x86_64-tools
+    * mingw-w64-x86_64-zlib
+    * p7zip
+    * pv
+    * python3-pip
+    * rsync
+    * unzip
 * Visual Studio 2019 buildtools (cli)
 * Firefox 
 * 7zip.portable
