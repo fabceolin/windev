@@ -82,3 +82,7 @@ The Windows 2019 license is valid for 180 days and Office for 5 days after the f
 * vim
 * wget
 * dependencywalker
+
+# Building docker image
+
+under construction
