@@ -9,7 +9,7 @@ docker pull ghcr.io/fabceolin/windev
 Creating the container with 4 CPUs and 2 GB RAM called windev:
 
 ```
-docker run -p 5900:5900 -p 3389:3389 -p 32022:22 -eCPU=4 -eRAM=2048 --privileged -it --name windev --device=/dev/kvm --device=/dev/net/tun -v /sys/fs/cgroup:/sys/fs/cgroup:rw --cap-add=NET_ADMIN --cap-add=SYS_ADMIN --cap-add=DAC_READ_SEARCH -v /lib/modules/:/lib/modules/ ghcr.io/fabceolin/windev:latest bash
+docker run -p 5900:5900 -p 3389:3389 -p 32022:22 -eCPU=4 -eRAM=2048 --privileged -it --name windev --device=/dev/kvm --device=/dev/net/tun -v /sys/fs/cgroup:/sys/fs/cgroup:rw --cap-add=NET_ADMIN --cap-add=SYS_ADMIN --cap-add=DAC_READ_SEARCH -v /lib/modules/:/lib/modules/ -v $HOME:/build ghcr.io/fabceolin/windev:latest bash
 ```
 
 SSH to Windows Machine
@@ -30,6 +30,14 @@ RDP to Windows Machine
 xfreerdp /u:vagrant /p:vagrant  /d:workgroup /v:localhost:3389
 ```
 
+Accessing linux home:
+```
+sshpass -pvagrant ssh -p 32022 vagrant@localhost
+net use s: \\172.17.0.3\home /user:root root
+s:
+```
+
+
 # Introduction
 
 I create this docker image inspired by work from Microsoft here https://developer.microsoft.com/pt-br/windows/downloads/virtual-machines/, allowing creating fresh Windows installation inside container instantly with difference that we can personalize the Windows before usage.
@@ -40,7 +48,7 @@ The Windows 2019 license is valid for 180 days and Office for 5 days after the f
 
 * Windows has opengl 4.1 enabled via software with mesa drivers
 
-# Pre installed
+# Pre installed on :latest
 * msys2 environment
     * base-devel
     * dos2unix
@@ -83,6 +91,21 @@ The Windows 2019 license is valid for 180 days and Office for 5 days after the f
 * wget
 * dependencywalker
 
+# Pre requisites do build a image
+You need debootstrap, docker, sshpass and python3 installed on host
+
 # Building docker image
 
-under construction
+You need to run the commands below as root:
+
+```
+bash pre-setup-host.sh
+#The command below can take some hours to run. You need 300GB free on the device (I will improve this on the future)
+ansible-playbook -i chroot -c chroot setup-host.yml
+bash pos-setup-host.sh
+bash build-docker.sh
+```
+
+# Known bugs
+
+After the first boot, strangely, the Windows Machine needs some time between some seconds to an hour to enable internet access. If you discover how to avoid this problem, let me know.
