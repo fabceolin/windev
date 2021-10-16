@@ -92,7 +92,11 @@ The Windows 2019 license is valid for 180 days and Office for 5 days after the f
 * dependencywalker
 
 # Pre requisites do build a image
-You need debootstrap, docker, sshpass and python3 installed on host
+You need debootstrap, docker, sshpass, python3, python3-pip installed on host
+## on ubuntu
+```
+apt-get install -y debootstrap, docker.io, sshpass, python3, python3-pip
+```
 
 # Building docker image
 
