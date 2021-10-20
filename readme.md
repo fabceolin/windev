@@ -103,10 +103,13 @@ apt-get install -y debootstrap, docker.io, sshpass, python3, python3-pip
 You need to run the commands below as root:
 
 ```
+# Bind some dirs inside chroot
 bash pre-setup-host.sh
 #The command below can take some hours to run. You need 300GB free on the device (I will improve this on the future)
 ansible-playbook -i chroot -c chroot setup-host.yml
+# Unmount binded dirs
 bash pos-setup-host.sh
+# Build docker image
 bash build-docker.sh
 ```
 
