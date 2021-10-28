@@ -101,7 +101,7 @@ You can check what is installed on the file windev_Ansible.yml
 You need debootstrap, docker, sshpass, python3, python3-pip installed on host
 ## on ubuntu
 ```
-apt-get install -y debootstrap, docker.io, sshpass, python3, python3-pip
+sudo apt-get install -y debootstrap docker.io sshpass python3 python3-pip
 ```
 
 # Building docker image
