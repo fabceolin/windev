@@ -18,19 +18,19 @@ SSH to Windows Machine
 sshpass -pvagrant ssh -p 32022 -o StrictHostKeyChecking=no vagrant@localhost
 ```
 
-VNC to Windows Machine
+VNC to Windows Machine (to view BIOS and Windows Boot)
 
 ```
 xtightvncviewer localhost:5900
 ```
 
-RDP to Windows Machine
+RDP to Windows Machine (to access Windows after boot)
 
 ```
 xfreerdp /u:vagrant /p:vagrant  /d:workgroup /v:localhost:3389
 ```
 
-Accessing linux home:
+Accessing linux home from Windows:
 ```
 sshpass -pvagrant ssh -p 32022 vagrant@localhost
 net use s: \\172.17.0.3\home /user:root root
@@ -48,7 +48,7 @@ The Windows 2019 license is valid for 180 days and Office for 5 days after the f
 
 * Windows has opengl 4.1 enabled via software with mesa drivers
 
-# Pre installed on :latest
+# Pre installed (branch master) on :latest
 * msys2 environment
     * base-devel
     * dos2unix
@@ -90,6 +90,12 @@ The Windows 2019 license is valid for 180 days and Office for 5 days after the f
 * vim
 * wget
 * dependencywalker
+
+# Other branches
+
+You can check what is installed on the file windev_Ansible.yml
+
+:qt - The same the master, but some qt tools
 
 # Pre requisites do build a image
 You need debootstrap, docker, sshpass, python3, python3-pip installed on host
