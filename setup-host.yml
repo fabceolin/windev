@@ -188,3 +188,9 @@
     
     - name: Packer build
       shell: 'vagrant box add win_dev-Ansible windows_2019_libvirt.box'
+
+
+    - name: docker build
+      shell: DOCKER_BUILDKIT=1 docker build -t ghcr.io/fabceolin/windev:latest -f Dockerfile .
+      tags:
+        - docker

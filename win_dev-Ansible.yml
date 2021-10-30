@@ -17,8 +17,8 @@
     prefix: /mingw64
     ssh_host_key_checking: False
     paramiko_host_key_checking: False 
-    reqpythonmods: [ xonsh, glances, windows-curses, magic-wormhole ] #list of required python modules
-    ansible_python_interpreter: "c:\\Python37\\python.exe"
+    reqpythonmods: [ xonsh, glances, windows-curses, magic-wormhole, aqtinstall, PyQt5 ] #list of required python modules
+    ansible_python_interpreter: "c:\\Python38\\python.exe"
     #comentario
   tasks:
 
@@ -38,17 +38,21 @@
       - busybox
       - cmake
       - conemu
+      - dependencywalker
+      - firefox
       - git
       - innosetup
-      - firefox
+      - jom
       - microsoft-office-deployment
       - msys2
       - ninja
+      - qt5-default
+      - qtcreator
+      - qtcreator-cdbext
       - rapidee
       - sed
       - vim
       - wget
-      - dependencywalker
      tags:
       - packages
 
@@ -87,7 +91,15 @@
 
    - name: Install visual studio vctool with all optional
      win_chocolatey:
-      name: visualstudio2017-workload-vctools
+      name: visualstudio2019professional
+      state: present
+      timeout: 18500
+        #      package_params: "--allWorkloads --includeRecommended --includeOptional --passive --locale en-US"
+     tags: visualstudio
+
+   - name: Install visual studio vctool with all optional
+     win_chocolatey:
+      name: visualstudio2019-workload-vctools
       state: present
       timeout: 18500
       package_params: "--add Microsoft.VisualStudio.Component.VC.ATLMFC --add Microsoft.VisualStudio.Component.VC.ATL --passive --locale en-US"
@@ -96,7 +108,7 @@
    - name: Install python3
      win_chocolatey:
       name: python3
-      version: 3.7
+      version: 3.8
       state: present
       force: yes
       timeout: 18500
@@ -119,6 +131,11 @@
        chdir: c:/ProgramData/Chocolatey/bin/
        creates: c:/ProgramData/Chocolatey/bin/ls.exe
 
+   - name: Disable internet explorer configuration first run
+     ansible.windows.win_powershell:
+       script: | 
+         Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Internet Explorer\Main" -Name "DisableFirstRunCustomize" -Value 2
+
    - name: Configure the ssh service
      win_service:
        name: sshd
@@ -133,7 +150,7 @@
        elements:
          - c:\Program Files (x86)\Windows Kits\10\App Certification Kit\
          - c:\Program Files\cmake\bin
-         - c:\Python37
+         - c:\Python38
          - c:\tools\msys64\mingw64\x86_64-w64-mingw32\bin\
          - c:\tools\msys64\mingw64\bin
          - c:\tools\msys64\usr\bin
@@ -143,14 +160,14 @@
        - environment
    
    - name: Update pip
-     win_command: c:\Python37\python.exe -m pip install --upgrade pip
+     win_command: c:\Python38\python.exe -m pip install --upgrade pip
 
    - name: Check currently installed python3 modules
-     win_command: c:\Python37\Scripts\pip.exe list --format=freeze
+     win_command: c:\Python38\Scripts\pip.exe list --format=freeze
      register: curpythonmods
 
    - name: Install python3 modules
-     win_command: c:\Python37\python.exe -m pip install "{{ item }}"
+     win_command: c:\Python38\python.exe -m pip install "{{ item }}"
      with_items:
        - "{{ reqpythonmods | difference(curpythonmods.stdout_lines) }}"
 
@@ -198,7 +215,15 @@
        - environment
        - 3d
        - 3d-environment
-
+   
+   - name: Install qt6.2
+     win_shell:
+       c:\Python38\Scripts\aqt install 6.2.0 windows desktop win64_msvc2019_64 -m all
+     args:
+       chdir: c:/
+       creates: c:/6.2.0
+     tags:
+       - aqt
    
    - name: Reboot for winrm
      win_reboot:
