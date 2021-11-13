@@ -35,6 +35,7 @@
       - 7zip.portable
       - firefox
       - microsoft-office-deployment
+      - GoogleChrome
      tags:
       - packages
 
