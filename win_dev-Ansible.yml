@@ -17,6 +17,7 @@
     prefix: /mingw64
     ssh_host_key_checking: False
     paramiko_host_key_checking: False 
+    reqpythonmods: [ xonsh, glances, windows-curses, magic-wormhole, gdown ]
     #comentario
   tasks:
 
@@ -25,6 +26,12 @@
      args:
        executable: cmd
 
+   - name: Install teamviewer
+     win_chocolatey:
+      name: teamviewer
+      state: present
+      timeout: 1200
+     ignore_errors: yes
 
    - name: Install packages
      win_chocolatey:
@@ -35,9 +42,51 @@
       - 7zip.portable
       - firefox
       - microsoft-office-deployment
-      - GoogleChrome
+      - msys2
+      - curl
+      - adobereader
      tags:
       - packages
+
+   - name: Install python3
+     win_chocolatey:
+      name: python3
+      version: 3.8.10
+      state: present
+      force: yes
+      timeout: 18500
+
+   - name: Update pip
+     win_command: c:\Python38\python.exe -m pip install --upgrade pip
+
+   - name: Check currently installed python3 modules
+     win_command: c:\Python38\Scripts\pip.exe list --format=freeze
+     register: curpythonmods
+
+   - name: Install python3 modules
+     win_command: c:\Python38\python.exe -m pip install "{{ item }}"
+     with_items:
+       - "{{ reqpythonmods | difference(curpythonmods.stdout_lines) }}"
+
+   - name: Set the environment variables
+     win_path:
+       name: PATH
+       elements:
+         - c:\Python38
+         - c:\Python38\Scripts
+         - c:\tools\msys64\usr\bin
+       scope:  machine
+       state: present
+     tags:
+       - environment
+
+   - name: Download certificate installer
+     win_shell: c:\Python38\Scripts\gdown.exe --id 1NTXgpYtAN6iat597RXBn9R4SoPMaP_6s
+
+   - name: Downloader serpro signer
+     win_shell: |
+            curl https://www.serpro.gov.br/links-fixos-superiores/assinador-digital/assinador-serpro/arquivos/assinador-serpro-2-7-1-setup.exe -o assinador-serpro-2-7-1-setup.exe
+            .\assinador-serpro-2-7-1-setup.exe /mode silent
 
    - name: Add a PowerShell module
      win_psmodule:
@@ -57,6 +106,21 @@
        state: started
      tags:
        - ssh
+
+   - name: Install msys2 tools to get gnu utils
+     win_shell: |
+      c:\tools\msys64\usr\bin\bash.exe --login -c "pacman -Sy --noconfirm --needed {{ item }}"
+     loop:
+      - dos2unix
+      - p7zip
+      - pv
+      - python3-pip
+      - unzip
+     args:
+       creates: c:/tools/msys64/mingw64/x86_64-w64-mingw32/bin/unzip.exe
+     tags:
+      - msys2
+
    - name: "Download Mesa drivers"
      ansible.windows.win_get_url:
          url: "https://github.com/pal1000/mesa-dist-win/releases/download/21.1.3/mesa3d-21.1.3-release-msvc.7z"

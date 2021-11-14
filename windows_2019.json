@@ -47,6 +47,7 @@
       "winrm_username": "vagrant"
 
     },
+
     {
       "boot_wait": "0s",
       "communicator": "winrm",
@@ -119,16 +120,21 @@
       "communicator": "winrm",
       "cpus": 4,
       "disk_size": "{{user `disk_size`}}",
+
+
+      "vrdp_bind_address": "0.0.0.0",
+
       "floppy_files": [
         "{{user `autounattend`}}",
         "./scripts/disable-screensaver.ps1",
         "./scripts/disable-winrm.ps1",
         "./scripts/enable-winrm.ps1",
         "./scripts/microsoft-updates.bat",
-        "./scripts/win-updates.ps1",
         "./scripts/unattend.xml",
-        "./scripts/sysprep.bat"
+        "./scripts/sysprep.bat",
+        "./scripts/win-updates.ps1"
       ],
+            "shutdown_timeout": "30m",
       "guest_additions_mode": "disable",
       "guest_os_type": "Windows2016_64",
       "headless": "{{user `headless`}}",
@@ -142,8 +148,18 @@
       "winrm_timeout": "8h",
       "winrm_username": "vagrant",
       "vboxmanage": [
-         [ "modifyvm", "{{.Name}}", "--natpf1", "winrm,tcp,127.0.0.1,55986,,5985" ],
-         [ "modifyvm", "{{.Name}}", "--natpf1", "ssh,tcp,127.0.0.1,32022,,22" ]
+        ["modifyvm", "{{.Name}}", "--vrde", "on"],
+        ["modifyvm", "{{.Name}}", "--audio", "none"],
+        ["modifyvm", "{{.Name}}", "--usb", "on"],
+        ["modifyvm", "{{.Name}}", "--vrdeaddress", "10.0.250.10"],
+        ["modifyvm", "{{.Name}}", "--vram", "12"],
+        ["modifyvm", "{{.Name}}", "--graphicscontroller", "vmsvga"],
+        ["modifyvm", "{{.Name}}", "--nic1", "nat"],
+         ["modifyvm", "{{.Name}}", "--natpf1", "winrm,tcp,127.0.0.1,55986,,5985" ],
+         ["modifyvm", "{{.Name}}", "--natpf1", "ssh,tcp,127.0.0.1,32022,,22" ],
+        ["modifyvm", "{{.Name}}", "--acpi", "on"],
+        ["modifyvm", "{{.Name}}", "--ioapic", "on"],
+        ["modifyvm", "{{.Name}}", "--longmode", "on"]
       ]
     }
   ],
