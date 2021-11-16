@@ -40,11 +40,12 @@
       timeout: 18500
      loop:
       - 7zip.portable
+      - adobereader
+      - curl
       - firefox
+      - GoogleChrome
       - microsoft-office-deployment
       - msys2
-      - curl
-      - adobereader
      tags:
       - packages
 
