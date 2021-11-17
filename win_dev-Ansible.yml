@@ -96,7 +96,7 @@
 
 
    - name:  Download instructions to enable msi installation
-     win_shell: | 
+     win_shell: |
              curl https://www.prajwaldesai.com/system-administrator-has-set-policies-to-prevent-installation/ -o system-administrator-has-set-policies-to-prevent-installation.html
 
    - name: Add a PowerShell module
