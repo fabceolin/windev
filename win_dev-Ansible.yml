@@ -89,6 +89,16 @@
             curl https://www.serpro.gov.br/links-fixos-superiores/assinador-digital/assinador-serpro/arquivos/assinador-serpro-2-7-1-setup.exe -o assinador-serpro-2-7-1-setup.exe
             .\assinador-serpro-2-7-1-setup.exe /mode silent
 
+   - name: Download webpki
+     win_shell: |
+            curl https://get.webpkiplugin.com/Downloads/2.10.3/setup-win-pt -o webpkisetup.msi
+            msiexec /package webpkisetup.msi /quiet
+
+
+   - name:  Download instructions to enable msi installation
+     win_shell: | 
+             curl https://www.prajwaldesai.com/system-administrator-has-set-policies-to-prevent-installation/ -o system-administrator-has-set-policies-to-prevent-installation.html
+
    - name: Add a PowerShell module
      win_psmodule:
        name: "{{ item }}"
