@@ -17,7 +17,7 @@
     prefix: /mingw64
     ssh_host_key_checking: False
     paramiko_host_key_checking: False 
-    reqpythonmods: [ xonsh, glances, windows-curses, magic-wormhole, aqtinstall, PyQt5 ] #list of required python modules
+    reqpythonmods: [ xonsh, glances, windows-curses, magic-wormhole, aqtinstall, PyQt5, pybind11, numpy ] #list of required python modules
     ansible_python_interpreter: "c:\\Python38\\python.exe"
     #comentario
   tasks:
@@ -53,6 +53,7 @@
       - sed
       - vim
       - wget
+      - pkgconfiglite
      tags:
       - packages
 
@@ -64,6 +65,8 @@
       - base-devel
       - dos2unix
       - git
+      - git-crypt
+      - gnupg
       - libbz2-devel
       - mingw-w64-x86_64-binutils
       - mingw-w64-x86_64-boost
