@@ -181,10 +181,16 @@
               
 
     - name: Packer build
-      shell: 'packer build --on-error=abort --only=qemu --var iso_url=17763.379.190312-0539.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us.iso --var iso_checksum="sha256:221f9acbc727297a56674a0f1722b8ac7b6e840b4e1ffbdd538a9ed0da823562" --var headless="true" windows_2019.json'
+      shell: 'packer build --on-error=abort --force --only=qemu --var iso_url=17763.379.190312-0539.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us.iso --var iso_checksum="sha256:221f9acbc727297a56674a0f1722b8ac7b6e840b4e1ffbdd538a9ed0da823562" --var headless="true" windows_2019.json'
       tags:
         - packer
       
     
     - name: Packer build
-      shell: 'vagrant box add win_dev-Ansible windows_2019_libvirt.box'
+      shell: 'vagrant box add --force win_dev-Ansible windows_2019_libvirt.box'
+
+
+    - name: docker build
+      shell: DOCKER_BUILDKIT=1 docker build -t ghcr.io/fabceolin/windev:office -f Dockerfile .
+      tags:
+        - docker

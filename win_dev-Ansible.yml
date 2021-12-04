@@ -17,6 +17,7 @@
     prefix: /mingw64
     ssh_host_key_checking: False
     paramiko_host_key_checking: False 
+    reqpythonmods: [ xonsh, glances, windows-curses, magic-wormhole, gdown ]
     #comentario
   tasks:
 
@@ -33,10 +34,50 @@
       timeout: 18500
      loop:
       - 7zip.portable
+      - GoogleChrome
+      - curl
       - firefox
       - microsoft-office-deployment
+      - msys2
      tags:
       - packages
+
+
+
+   - name: Install python3
+     win_chocolatey:
+      name: python3
+      version: 3.8.10
+      state: present
+      force: yes
+      timeout: 18500
+
+   - name: Update pip
+     win_command: c:\Python38\python.exe -m pip install --upgrade pip
+
+   - name: Check currently installed python3 modules
+     win_command: c:\Python38\Scripts\pip.exe list --format=freeze
+     register: curpythonmods
+
+   - name: Install python3 modules
+     win_command: c:\Python38\python.exe -m pip install "{{ item }}"
+     with_items:
+       - "{{ reqpythonmods | difference(curpythonmods.stdout_lines) }}"
+
+   - name: Set the environment variables
+     win_path:
+       name: PATH
+       elements:
+         - c:\Python38
+         - c:\Python38\Scripts
+         - c:\tools\msys64\usr\bin
+       scope:  machine
+       state: present
+     tags:
+       - environment
+
+   - name: Download adobe acrobat
+     win_shell: c:\Python38\Scripts\gdown.exe --id 19vwMq4romsRJjCK8vZ_NZBUX55r_-ZEp
 
    - name: Add a PowerShell module
      win_psmodule:
@@ -72,6 +113,21 @@
          delete_archive: yes
      tags:
          - 3d
+
+
+   - name: Install msys2 tools to get gnu utils
+     win_shell: |
+      c:\tools\msys64\usr\bin\bash.exe --login -c "pacman -Sy --noconfirm --needed {{ item }}"
+     loop:
+      - dos2unix
+      - p7zip
+      - pv
+      - python3-pip
+      - unzip
+     args:
+       creates: c:/tools/msys64/mingw64/x86_64-w64-mingw32/bin/unzip.exe
+     tags:
+      - msys2
 
    - name: "Install Mesa drivers"
      win_shell: "c:\\tools\\msys64\\usr\\bin\\echo.exe -e -n 22\\n | c:\\tools\\msys64\\usr\\bin\\pv.exe -q -L 1 | c:\\tools\\msys64\\usr\\bin\\timeout.exe 5s c:/mesa/systemwidedeploy.cmd"
