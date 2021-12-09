@@ -1,5 +1,7 @@
 # Quickstart
 
+The packages access is configured as opensource and public, but for some reason (maybe the size of images?), Github doesn't allow public download of docker images. So please, ask for access in the issue tab, and I'll be happy to share the image.
+
 Download the docker image:
 
 ```
