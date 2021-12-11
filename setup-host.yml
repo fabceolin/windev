@@ -53,6 +53,7 @@
         - libvirt-dev
         - lsb-release
         - packer=1.6.1
+        - python3-pip
         - qemu-kvm
         - rsyslog
         - software-properties-common
@@ -77,7 +78,7 @@
 
     - name: Installing requirements via pip3
       pip:
-        name: ['pywinrm', 'pypsrp']
+        name: ['pywinrm', 'pypsrp', 'gdown']
         state: latest
         executable: pip3
 
@@ -86,25 +87,23 @@
 
     - name: Check if the windows iso exists
       stat:
-        path: "./9600.16384.WINBLUE_RTM.130821-1623_X64FRE_SERVER_SOLUTION_EN-US-IRM_SSSO_X64FRE_EN-US_DV5.ISO"
+        path: "./Win11_English_x64v1.iso"
       register: p
 
     - debug:
         msg: "{{ p }}"
 
     - debug:
-        msg: "9600.16384.WINBLUE_RTM.130821-1623_X64FRE_SERVER_SOLUTION_EN-US-IRM_SSSO_X64FRE_EN-US_DV5.ISO file exists..."
+        msg: "iso file exists..."
       when: p.stat.exists
 
     - debug:
-        msg: "9600.16384.WINBLUE_RTM.130821-1623_X64FRE_SERVER_SOLUTION_EN-US-IRM_SSSO_X64FRE_EN-US_DV5.ISO file not found"
+        msg: "iso file not found"
       when: p.stat.exists == False
 
     - name: Download windows iso
-      get_url:
-        url: http://download.microsoft.com/download/8/F/7/8F7024D2-AB2A-4BE2-8406-1E3AC49C5C1F/9600.16384.WINBLUE_RTM.130821-1623_X64FRE_SERVER_SOLUTION_EN-US-IRM_SSSO_X64FRE_EN-US_DV5.ISO
-        dest: '.'
-      become: true
+      shell: |
+              gdown --id 1lE7G6mBykdOTaU4rXXd4wG8CQCdhIg0s
       when: p.stat.exists == False
 
 
@@ -157,9 +156,9 @@
         - answer_files
         - scripts
         - Vagrantfile
-        - vagrantfile-windows_2016.template
+        - vagrantfile-windows_10.template
         - win_dev-Ansible.yml
-        - windows_2012_r2.json
+        - windows_11.json
         - startup.sh
         - Dockerfile
       tags:
@@ -184,16 +183,16 @@
               
 
     - name: Packer build
-      shell: 'packer build --on-error=abort --only=qemu --var iso_url=9600.16384.WINBLUE_RTM.130821-1623_X64FRE_SERVER_SOLUTION_EN-US-IRM_SSSO_X64FRE_EN-US_DV5.ISO --var iso_checksum="sha256:5813e6dfa3f362c14ff4d8502f4b8b3251996a404fbc9d55fcfa73457c7fd75a" --var headless="true" windows_2012_r2.json'
+      shell: 'packer build --on-error=abort --only=qemu --var iso_url=Win11_English_x64v1.iso --var iso_checksum="sha256:4bc6c7e7c61af4b5d1b086c5d279947357cff45c2f82021bb58628c2503eb64e" --var headless="true" windows_11.json'
       tags:
         - packer
       
     
     - name: Packer build
-      shell: 'vagrant box add win_dev-Ansible windows_2019_libvirt.box'
+      shell: 'vagrant box add win_dev-Ansible windows_11_libvirt.box'
 
 
     - name: docker build
-      shell: DOCKER_BUILDKIT=1 docker build -t ghcr.io/fabceolin/windev:qt -f Dockerfile .
+      shell: DOCKER_BUILDKIT=1 docker build -t ghcr.io/fabceolin/windev:windows11 -f Dockerfile .
       tags:
         - docker
