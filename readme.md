@@ -123,4 +123,4 @@ bash build-docker.sh
 
 # Known bugs
 
-After the first boot, strangely, the Windows Machine needs some time between some seconds to an hour to enable internet access. If you discover how to avoid this problem, let me know.
+You need to login over VNC, open the browser and try to access the internet to enable the internet. If you discover how to avoid this to access internet over ssh only, let me know.
