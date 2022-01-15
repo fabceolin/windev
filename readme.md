@@ -97,12 +97,12 @@ The Windows 2019 license is valid for 180 days and Office for 5 days after the f
 
 You can check what is installed on the file windev_Ansible.yml
 
-:qt - The same the master, but some qt tools
-:usb - Configured to use a specific usb device inside Windows. You can change de Vagrantfile to change the usb device
-:experimental - Same as qt, but used for testing more things
-:office - Microsoft Office installed
-:minimal - Only firefox, 7zip and python installed with software 3d drivers
-:latest - image of master branch
+* :qt - The same the master, but some qt tools
+* :usb - Same as office, but configured to use a specific usb device inside Windows. You can change de Vagrantfile to change the usb device
+* :experimental - Same as qt, but used for testing more things
+* :office - Chrome and Microsoft Office installed
+* :minimal - Only firefox, 7zip and python installed with software 3d drivers
+* :latest - image of master branch
 
 # Pre requisites do build a image
 You need debootstrap, docker, sshpass, python3, python3-pip installed on host
