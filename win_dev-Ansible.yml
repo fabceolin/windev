@@ -45,6 +45,8 @@
       - jom
       - microsoft-office-deployment
       - msys2
+        # neovim is necessary to use nvimdiff over ssh with TERM=VT100
+      - neovim
       - ninja
       - qt5-default
       - qtcreator
@@ -158,6 +160,7 @@
        state: present
      tags:
        - environment
+
    
    - name: Update pip
      win_command: c:\Python38\python.exe -m pip install --upgrade pip
