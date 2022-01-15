@@ -2,7 +2,8 @@
 set -eou pipefail
 
 
-chown root:kvm /dev/kvm
+chown root:kvm /dev/kvm || true
+
 service libvirtd start
 service virtlogd start
 service smbd start
