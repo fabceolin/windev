@@ -1,15 +1,17 @@
 # Quickstart
 
-Download the docker image:
+Download the docker image (available tags: office, usb, qt, latest, experimental) :
 
 ```
-docker pull ghcr.io/fabceolin/windev
+docker pull ghcr.io/fabceolin/windev:latest
 ```
 
-Creating the container with 4 CPUs and 2 GB RAM called windev:
+Creating the container with 4 CPUs and 2 GB RAM using kvm (to use without virtualization acceleration, use DRIVER=qemu instead and remove --device=/dev/kvm parameter) called windev:
 
 ```
-docker run -p 5900:5900 -p 3389:3389 -p 32022:22 -eCPU=4 -eRAM=2048 --privileged -it --name windev --device=/dev/kvm --device=/dev/net/tun -v /sys/fs/cgroup:/sys/fs/cgroup:rw --cap-add=NET_ADMIN --cap-add=SYS_ADMIN --cap-add=DAC_READ_SEARCH -v /lib/modules/:/lib/modules/ -v $HOME:/build ghcr.io/fabceolin/windev:latest bash
+git clone git@github.com:fabceolin/windev.git
+cd windev
+docker run -p 5900:5900 -p 3389:3389 -p 32022:22 -eDRIVER=kvm -eCPU=4 -eRAM=2048 --privileged -it --name windev --device=/dev/kvm --device=/dev/net/tun -v /sys/fs/cgroup:/sys/fs/cgroup:rw --cap-add=NET_ADMIN --cap-add=SYS_ADMIN --cap-add=DAC_READ_SEARCH -v /lib/modules/:/lib/modules/ -v $HOME:/build -v $PWD/Vagrantfile:/Vagrantfile -v $PWD/startup.sh:/startup.sh ghcr.io/fabceolin/windev:latest bash
 ```
 
 SSH to Windows Machine
@@ -96,6 +98,8 @@ The Windows 2019 license is valid for 180 days and Office for 5 days after the f
 You can check what is installed on the file windev_Ansible.yml
 
 :qt - The same the master, but some qt tools
+:usb - Configured to use a specific usb device inside Windows. You can change de Vagrantfile to change the usb device
+:experimental - Same as qt, but used for testing more things
 
 # Pre requisites do build a image
 You need debootstrap, docker, sshpass, python3, python3-pip installed on host
@@ -115,10 +119,8 @@ bash pre-setup-host.sh
 ansible-playbook -i chroot -c chroot setup-host.yml
 # Unmount binded dirs
 bash pos-setup-host.sh
-# Build docker image
-bash build-docker.sh
 ```
 
 # Known bugs
 
-After the first boot, strangely, the Windows Machine needs some time between some seconds to an hour to enable internet access. If you discover how to avoid this problem, let me know.
+You need to login over VNC, open the browser and try to access the internet to enable the internet. If you discover how to avoid this to access internet over ssh only, let me know.

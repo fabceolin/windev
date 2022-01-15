@@ -17,8 +17,7 @@
     prefix: /mingw64
     ssh_host_key_checking: False
     paramiko_host_key_checking: False 
-    reqpythonmods: [ xonsh, glances, windows-curses, magic-wormhole, gdown ]
-    #comentario
+    reqpythonmods: [ xonsh, glances, windows-curses, magic-wormhole ]
   tasks:
 
    - name: Install chocolatey
@@ -34,15 +33,11 @@
       timeout: 18500
      loop:
       - 7zip.portable
-      - GoogleChrome
       - curl
       - firefox
-      - microsoft-office-deployment
       - msys2
      tags:
       - packages
-
-
 
    - name: Install python3
      win_chocolatey:
@@ -75,9 +70,6 @@
        state: present
      tags:
        - environment
-
-   - name: Download adobe acrobat
-     win_shell: c:\Python38\Scripts\gdown.exe --id 19vwMq4romsRJjCK8vZ_NZBUX55r_-ZEp
 
    - name: Add a PowerShell module
      win_psmodule:
@@ -162,5 +154,3 @@
    - name: Reboot for winrm
      win_reboot:
         reboot_timeout: 18000
-
-
