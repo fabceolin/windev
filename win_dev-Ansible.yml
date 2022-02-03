@@ -48,6 +48,7 @@
         # neovim is necessary to use nvimdiff over ssh with TERM=VT100
       - neovim
       - ninja
+      - pkgconfiglite
       - qt5-default
       - qtcreator
       - qtcreator-cdbext
@@ -66,6 +67,8 @@
       - base-devel
       - dos2unix
       - git
+      - git-crypt
+      - gnupg
       - libbz2-devel
       - mingw-w64-x86_64-binutils
       - mingw-w64-x86_64-boost
