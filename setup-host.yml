@@ -191,6 +191,6 @@
 
 
     - name: docker build
-      shell: DOCKER_BUILDKIT=1 docker build -t ghcr.io/fabceolin/windev:office -f Dockerfile .
+      shell: DOCKER_BUILDKIT=1 docker build -t ghcr.io/fabceolin/windev:minimal -f Dockerfile .
       tags:
         - docker
