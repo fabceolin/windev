@@ -9,6 +9,8 @@ RUN apt-get install -y rsyslog
 RUN apt-get install -y curl 
 RUN apt-get install -y net-tools
 RUN apt-get install -y busybox-static 
+RUN apt-get install -y xfvb
+RUN apt-get install -y xfreerdp2-x11
 RUN apt-get autoclean
 RUN apt-get autoremove
 RUN --mount=type=bind,target=/tmp/vagrant_2.2.16_x86_64.deb,source=vagrant_2.2.16_x86_64.deb,rw \
