@@ -1,4 +1,6 @@
-driver = ENV['DRIVER'] || "KVM"
+# driver = ENV['DRIVER'] || "KVM"
+
+qemudriver = ENV['DRIVER'] || "kvm"
 nested = ENV['NESTED'] || true
 cpus = ENV['CPU'] || 2
 memory = ENV['RAM'] || 4096
@@ -25,7 +27,7 @@ Vagrant.configure("2") do |config|
   config.winrm.retry_delay = 20
   config.winrm.max_tries = 1000
   config.vm.provider :libvirt do |libvirt|
-    libvirt.driver = driver
+    libvirt.driver = qemudriver
     libvirt.nested = nested
     libvirt.cpus = cpus
     libvirt.memory = memory
