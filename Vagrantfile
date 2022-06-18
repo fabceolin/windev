@@ -30,5 +30,8 @@ Vagrant.configure("2") do |config|
     libvirt.cpus = cpus
     libvirt.memory = memory
     libvirt.graphics_ip = "0.0.0.0"
+    libvirt.nested = true
+    libvirt.usb_controller :model => "qemu-xhci"
+    libvirt.usb :product => '0xa022', :vendor => '0x076b'
   end
 end
