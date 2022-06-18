@@ -3,7 +3,7 @@
 Download the docker image (available tags: office, usb, qt, latest, experimental, minimal) :
 
 ```
-docker pull ghcr.io/fabceolin/windev:latest
+docker pull ghcr.io/fabceolin/windev:usb
 ```
 
 Creating the container with 4 CPUs and 2 GB RAM using kvm (to use without virtualization acceleration, use DRIVER=qemu instead and remove --device=/dev/kvm parameter) called windev:
@@ -11,7 +11,7 @@ Creating the container with 4 CPUs and 2 GB RAM using kvm (to use without virtua
 ```
 git clone git@github.com:fabceolin/windev.git
 cd windev
-docker run -p 5900:5900 -p 3389:3389 -p 32022:22 -eDRIVER=kvm -eCPU=4 -eRAM=2048 --privileged -it --name windev --device=/dev/kvm --device=/dev/net/tun -v /sys/fs/cgroup:/sys/fs/cgroup:rw --cap-add=NET_ADMIN --cap-add=SYS_ADMIN --cap-add=DAC_READ_SEARCH -v /lib/modules/:/lib/modules/ -v $HOME:/build -v $PWD/Vagrantfile:/Vagrantfile -v $PWD/startup.sh:/startup.sh ghcr.io/fabceolin/windev:latest bash
+docker run -p 5900:5900 -p 3389:3389 -p 32022:22 -eDRIVER=kvm -eCPU=4 -eRAM=2048 --privileged -it --name windev --device=/dev/kvm --device=/dev/net/tun -v /sys/fs/cgroup:/sys/fs/cgroup:rw --cap-add=NET_ADMIN --cap-add=SYS_ADMIN --cap-add=DAC_READ_SEARCH -v /lib/modules/:/lib/modules/ -v $HOME:/build -v $PWD/Vagrantfile:/Vagrantfile -v $PWD/startup.sh:/startup.sh ghcr.io/fabceolin/windev:usb bash
 ```
 
 SSH to Windows Machine
@@ -44,7 +44,7 @@ s:
 
 I create this docker image inspired by work from Microsoft here https://developer.microsoft.com/pt-br/windows/downloads/virtual-machines/, allowing creating fresh Windows installation inside container instantly with difference that we can personalize the Windows before usage.
 
-The Windows 2019 license is valid for 180 days and Office for 5 days after the first boot. 
+The Windows 2019 license is valid for 180 days and Office for 5 days after the first boot.
 
 # Features
 
@@ -76,7 +76,7 @@ The Windows 2019 license is valid for 180 days and Office for 5 days after the f
     * rsync
     * unzip
 * Visual Studio 2019 buildtools (cli)
-* Firefox 
+* Firefox
 * 7zip.portable
 * busybox (gnu commands under msdos prompt)
 * cmake

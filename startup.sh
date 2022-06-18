@@ -4,7 +4,7 @@ set -eou pipefail
 
 chown root:kvm /dev/kvm || true
 
-rm -f /var/run/rsyslog.pid
+rm -f /var/run/rsyslog.pid || true
 service libvirtd start
 service virtlogd start
 service smbd start
