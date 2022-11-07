@@ -5,12 +5,14 @@ set -eou pipefail
 chown root:kvm /dev/kvm || true
 
 rm -f /var/run/rsyslog.pid || true
+ip -br a
+
 service libvirtd start
 service virtlogd start
 service smbd start
 [ -z "$CPU" ] && export CPU=4
 [ -z "$RAM" ] && export RAM=4096
-VAGRANT_DEFAULT_PROVIDER=libvirt vagrant up
+VAGRANT_DEFAULT_PROVIDER=libvirt VAGRANT_LOG=debug vagrant up
 iptables-save > $HOME/firewall.txt
 rsyslogd
 IP=$(vagrant ssh-config | grep HostName | awk '{ print $2 }')

@@ -29,8 +29,8 @@
         update_cache: true
       become: yes
       loop:
-        - deb https://download.docker.com/linux/ubuntu focal stable
-        - deb [arch=amd64] https://apt.releases.hashicorp.com focal main
+        - deb https://download.docker.com/linux/ubuntu jammy stable
+        - deb [arch=amd64] https://apt.releases.hashicorp.com jammy main
 
     - name: Update apt-get repo and cache
       apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
@@ -57,7 +57,7 @@
         - rsyslog
         - software-properties-common
         - sudo
-        - vagrant=2.2.16
+        - vagrant=2.3.2
         - vim
         - virt-manager
         - wget
@@ -125,22 +125,22 @@
       become: true
       when: p.stat.exists == False
 
-    - name: Check if the vagrant_2.2.16_x86_64.deb exists
+    - name: Check if the vagrant_2.3.2-1_amd64.deb
       stat:
-        path: vagrant_2.2.16_x86_64.deb
+        path: vagrant_2.3.2-1_amd64.deb
       register: p
 
     - debug:
-        msg: "vagrant_2.2.16_x86_64.deb file exists..."
+        msg: "vagrant_2.3.2-1_amd64.deb file exists..."
       when: p.stat.exists
 
     - debug:
-        msg: "vagrant_2.2.16_x86_64.deb file not found"
+        msg: "vagrant_2.3.2-1_amd64.deb file not found"
       when: p.stat.exists == False
 
-    - name: Download vagrant_2.2.16_x86_64.deb
+    - name: Download vagrant_2.3.2_linux_amd64.deb
       get_url:
-        url: https://releases.hashicorp.com/vagrant/2.2.16/vagrant_2.2.16_x86_64.deb 
+        url: https://releases.hashicorp.com/vagrant/2.3.2/vagrant_2.3.2-1_amd64.deb 
         dest: '.'
       become: true
       when: p.stat.exists == False
@@ -191,6 +191,6 @@
 
 
     - name: docker build
-      shell: DOCKER_BUILDKIT=1 docker build -t ghcr.io/fabceolin/windev:usb -f Dockerfile .
+      shell: DOCKER_BUILDKIT=1 docker build -t ghcr.io/fabceolin/windev:virtiofs -f Dockerfile .
       tags:
         - docker

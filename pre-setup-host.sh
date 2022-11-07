@@ -4,7 +4,7 @@
 
 # Considering the mininum installation after focal debotstrapped chroot variant buildd
 mkdir windev
-sudo debootstrap --variant=buildd focal windev
+sudo debootstrap --variant=buildd jammy windev
 python3 -m pip install pip --upgrade
 python3 -m pip install ansible
 for i in dev proc sys /dev/pts run ; do mount --bind /$i windev/$i; done
@@ -13,6 +13,7 @@ cd /root
 apt-get update
 apt-get upgrade -y
 apt-get install software-properties-common -y || true
+apt-add-repository universe
 mv /var/lib/dpkg/info/systemd.postinst /var/lib/dpkg/info/systemd.postinst.orig
 dpkg --configure --pending
 add-apt-repository multiverse
