@@ -15,7 +15,7 @@ RUN apt-get autoclean -y
 RUN apt-get autoremove -y
 RUN --mount=type=bind,target=/tmp/vagrant_2.3.2-1_amd64.deb,source=vagrant_2.3.2-1_amd64.deb,rw \
     dpkg -i /tmp/vagrant_2.3.2-1_amd64.deb
-RUN vagrant plugin install vagrant-libvirt
+RUN vagrant plugin install vagrant-libvirt --plugin-version 0.9.0
 RUN --mount=type=bind,target=/tmp/windows_2019_libvirt.box,source=windows_2019_libvirt.box,rw \
     vagrant box add windev /tmp/windows_2019_libvirt.box
 RUN vagrant init windev
