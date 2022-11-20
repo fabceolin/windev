@@ -13,6 +13,8 @@ Vagrant.configure("2") do |config|
   config.vm.network :forwarded_port, guest: 5901, host: 5901, id: "vnc1", auto_correct: true
   config.vm.network :forwarded_port, guest: 5900, host: 5900, id: "vnc2", auto_correct: true
 
+#  config.vm.synced_folder '.', '/', type: 'virtiofs'
+
   config.vm.communicator = "winrm"
   config.winrm.ssl_peer_verification = false
   config.winrm.transport = :plaintext
@@ -25,6 +27,8 @@ Vagrant.configure("2") do |config|
   config.winrm.retry_delay = 20
   config.winrm.max_tries = 1000
   config.vm.provider :libvirt do |libvirt|
+
+    libvirt.memorybacking :access, :mode => 'shared'
     libvirt.driver = driver
     libvirt.nested = nested
     libvirt.cpus = cpus

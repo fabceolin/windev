@@ -46,6 +46,7 @@
       - GoogleChrome
       - microsoft-office-deployment
       - msys2
+      - virtio-drivers
      tags:
       - packages
 
