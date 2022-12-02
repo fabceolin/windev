@@ -119,6 +119,14 @@
      tags:
        - ssh
 
+   - name: Configure the virtiofssvc
+     win_service:
+       name: virtiofssvc
+       start_mode: auto
+       state: started
+     tags:
+       - virtiofssvc
+
    - name: Install msys2 tools to get gnu utils
      win_shell: |
       c:\tools\msys64\usr\bin\bash.exe --login -c "pacman -Sy --noconfirm --needed {{ item }}"
