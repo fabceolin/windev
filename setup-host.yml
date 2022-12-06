@@ -100,7 +100,7 @@
     - name: Download windows iso
       get_url:
         url: https://software-download.microsoft.com/download/sg/17763.379.190312-0539.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us.iso
-        dest: '.'
+        dest: '17763.379.190312-0539.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us.iso'
       become: true
       when: p.stat.exists == False
 

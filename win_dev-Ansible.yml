@@ -119,13 +119,16 @@
      tags:
        - ssh
 
-   - name: Configure the virtiofssvc
-     win_service:
-       name: virtiofssvc
-       start_mode: auto
-       state: started
-     tags:
-       - virtiofssvc
+         #pnputil /a e:\viofs\2k19\amd64\viofs.inf /i
+
+
+         #    - name: Configure the virtiofssvc
+         #      win_service:
+         #        name: virtiofssvc
+         #        start_mode: auto
+         #        state: started
+         #      tags:
+         #        - virtiofssvc
 
    - name: Install msys2 tools to get gnu utils
      win_shell: |
