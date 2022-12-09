@@ -11,6 +11,8 @@ RUN apt-get install -y curl
 RUN apt-get install -y net-tools
 RUN apt-get install -y busybox-static 
 RUN apt-get install -y build-essential
+RUN apt-get install -y openssh-client
+RUN apt-get install -y ssh-askpass
 RUN apt-get autoclean -y
 RUN apt-get autoremove -y
 RUN --mount=type=bind,target=/tmp/vagrant_2.3.2-1_amd64.deb,source=vagrant_2.3.2-1_amd64.deb,rw \
