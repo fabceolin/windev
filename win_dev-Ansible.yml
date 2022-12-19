@@ -44,8 +44,8 @@
       - curl
       - firefox
       - GoogleChrome
-      - microsoft-office-deployment
       - msys2
+      - winfsp
       - virtio-drivers
      tags:
       - packages
